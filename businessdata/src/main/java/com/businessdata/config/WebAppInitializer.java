@@ -1,4 +1,4 @@
-package be.g00glen00b.config;
+package com.businessdata.config;
 
 import java.nio.charset.StandardCharsets;
 

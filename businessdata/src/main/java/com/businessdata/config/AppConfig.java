@@ -1,4 +1,4 @@
-package be.g00glen00b.config;
+package com.businessdata.config;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -22,14 +22,16 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.stereotype.Controller;
 
 @Configuration
-@EnableJpaRepositories(basePackages = { "be.g00glen00b.repository" })
-@ComponentScan(basePackages = "be.g00glen00b", excludeFilters = {
+@EnableJpaRepositories(basePackages = { "com.businessdata.repository" })
+@ComponentScan(basePackages = "com.businessdata", excludeFilters = {
     @ComponentScan.Filter(value = Controller.class, type = FilterType.ANNOTATION),
     @ComponentScan.Filter(value = Configuration.class, type = FilterType.ANNOTATION)
 })
 public class AppConfig extends RepositoryRestMvcConfiguration {
 
-  @Override
+  private static final String PACKAGES_SCAN = "com.businessdata";
+
+@Override
   protected void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
     super.configureRepositoryRestConfiguration(config);
     try {
@@ -53,9 +55,11 @@ public class AppConfig extends RepositoryRestMvcConfiguration {
               + System.getenv("POSTGRESQL_DB_PORT")
               + "/"+System.getenv("APP_NAME");
       System.out.println(url);
-	dataSource.setUrl(url);
-      dataSource.setUsername(System.getenv("POSTGRESQL_DB_USERNAME"));
-      dataSource.setPassword(System.getenv("POSTGRESQL_DB_PASSWORD"));
+      dataSource.setUrl("jdbc:postgresql://localhost:5433/test");
+      //dataSource.setUsername(System.getenv("POSTGRESQL_DB_USERNAME"));
+      //dataSource.setPassword(System.getenv("POSTGRESQL_DB_PASSWORD"));
+      dataSource.setUsername("postgres");
+      dataSource.setPassword("123456");
       dataSource.setTestOnBorrow(true);
       dataSource.setTestOnReturn(true);
       dataSource.setTestWhileIdle(true);
@@ -93,7 +97,7 @@ public class AppConfig extends RepositoryRestMvcConfiguration {
 
       LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
       factory.setJpaVendorAdapter(vendorAdapter);
-      factory.setPackagesToScan("be.g00glen00b.model");
+      factory.setPackagesToScan(PACKAGES_SCAN);
       factory.setDataSource(dataSource());
       return factory;
   }

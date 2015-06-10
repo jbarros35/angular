@@ -1,5 +1,4 @@
-package be.g00glen00b.controller;
-
+package com.businessdata.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 

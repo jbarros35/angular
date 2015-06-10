@@ -1,4 +1,4 @@
-package be.g00glen00b.config;
+package com.businessdata.config;
 
 import org.springframework.context.annotation.*;
 import org.springframework.web.servlet.config.annotation.*;
