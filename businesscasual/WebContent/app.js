@@ -3,6 +3,7 @@
 define([
 	'angular',
 	'angularRoute',
+	//'angularResource',
 	'home/home',
 	'about/about',
 	'blog/blog',
@@ -11,6 +12,7 @@ define([
 	// Declare app level module which depends on views, and components
 	return angular.module('myApp', [
 		'ngRoute',
+		//'ngResource',
 		'myApp.home',
 		'myApp.about',
 		'myApp.blog',
@@ -20,4 +22,5 @@ define([
 		$routeProvider.otherwise({redirectTo: '/home'});
 	}]);
 });
+
 

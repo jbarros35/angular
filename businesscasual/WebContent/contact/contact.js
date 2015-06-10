@@ -7,10 +7,10 @@ define([
 	.config(['$routeProvider', function($routeProvider) {
 		$routeProvider.when('/contact', {
 			templateUrl: 'contact/contact.html',
-			controller: 'View1Ctrl'
+			controller: 'contactCtrl'
 		});
 	}])
-	.controller('View1Ctrl', [function() {
+	.controller('contactCtrl', [function() {
 		
 	}]);
 });

@@ -8,9 +8,10 @@ define(['app', 'angularMocks'], function(app) {
 
 		describe('blog controller', function() {
 			it('should ....', inject(function($controller) {
+				
 				//spec body
-				var view1Ctrl = $controller('View1Ctrl');
-				expect(view1Ctrl).toBeDefined();
+				var blogCtrl = $controller('blogCtrl');
+				expect(blogCtrl).toBeDefined();
 			}));
 		});
 	});

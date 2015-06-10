@@ -21,6 +21,7 @@ require.config({
 		angular: 'bower_components/angular/angular',
 		angularRoute: 'bower_components/angular-route/angular-route',
 		angularMocks: 'bower_components/angular-mocks/angular-mocks',
+		//angularResource: 'bower_components/angular-resource/angular-resource',
 		text: 'bower_components/requirejs-text/text'
 	},
 	shim: {
@@ -30,6 +31,10 @@ require.config({
 			deps:['angular'],
 			'exports':'angular.mock'
 		}
+		/*,
+		'angularResource': {
+	         deps: ['angular'],
+	    }*/
 	},
 	priority: [
 		"angular"
@@ -45,8 +50,9 @@ require([
 	], function(angular, app) {
 		var $html = angular.element(document.getElementsByTagName('html')[0]);
 		angular.element().ready(function() {
+			console.log('bootstrap ok');
 			// bootstrap the app manually
 			angular.bootstrap(document, ['myApp']);
 		});
-	}
+	}	
 );

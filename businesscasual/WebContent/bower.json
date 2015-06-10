@@ -13,6 +13,7 @@
     "html5-boilerplate": "~4.3.0",
     "requirejs-text": "2.0.x",
     "requirejs": "2.1.x",
-    "bootstrap": "~3.3.4"
+    "bootstrap": "~3.3.4",
+    "angular-resource": "~1.4.0"
   }
 }

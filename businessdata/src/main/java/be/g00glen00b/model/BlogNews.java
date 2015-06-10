@@ -26,6 +26,12 @@ public class BlogNews {
 
 	@Column
 	private Date postDate;
+	
+	@Column
+	private String shortDescription;
+	
+	@Column
+	private String text;
 
 	public int getNewId() {
 		return newId;
@@ -65,6 +71,22 @@ public class BlogNews {
 
 	public void setPostDate(Date postDate) {
 		this.postDate = postDate;
+	}
+
+	public String getShortDescription() {
+		return shortDescription;
+	}
+
+	public void setShortDescription(String shortDescription) {
+		this.shortDescription = shortDescription;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
 	}
 
 }

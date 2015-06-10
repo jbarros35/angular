@@ -9,11 +9,11 @@ define([
 	.config(['$routeProvider', function($routeProvider) {
 		$routeProvider.when('/about', {
 			templateUrl: 'about/about.html',
-			controller: 'View2Ctrl'
+			controller: 'blogCtrl'
 		});
 	}])
 	// We can load the controller only when needed from an external file
-	.controller('View2Ctrl', ['$scope', '$injector', function($scope, $injector) {
+	.controller('blogCtrl', ['$scope', '$injector', function($scope, $injector) {
 		require(['about/ctrl2'], function(ctrl2) {
 			// injector method takes an array of modules as the first argument
 			// if you want your controller to be able to use components from
