@@ -21,6 +21,8 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.stereotype.Controller;
 
+import com.businessdata.model.BlogNews;
+
 @Configuration
 @EnableJpaRepositories(basePackages = { "com.businessdata.repository" })
 @ComponentScan(basePackages = "com.businessdata", excludeFilters = {
@@ -36,6 +38,7 @@ public class AppConfig extends RepositoryRestMvcConfiguration {
     super.configureRepositoryRestConfiguration(config);
     try {
       config.setBaseUri(new URI("/api"));
+      config.exposeIdsFor(BlogNews.class);
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
@@ -116,4 +119,6 @@ public class AppConfig extends RepositoryRestMvcConfiguration {
     properties.put(HBM2DDL_AUTO, "create-drop");
     return properties;
   }*/
+
+
 }

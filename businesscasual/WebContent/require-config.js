@@ -54,5 +54,9 @@ require([
 			// bootstrap the app manually
 			angular.bootstrap(document, ['myApp']);
 		});
-	}	
+	}
 );
+
+var globalConfig = {
+	    serviceURL: 'http://localhost:8080/businessdata/api'
+	};

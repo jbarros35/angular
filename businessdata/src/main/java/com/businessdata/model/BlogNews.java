@@ -26,10 +26,10 @@ public class BlogNews {
 
 	@Column
 	private Date postDate;
-	
+
 	@Column
 	private String shortDescription;
-	
+
 	@Column
 	private String text;
 
