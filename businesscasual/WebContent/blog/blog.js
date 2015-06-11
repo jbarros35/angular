@@ -1,9 +1,10 @@
 'use strict';
 define([
 	'angular',
-	'angularRoute'
+	'angularRoute',
+	'ui-bootstrap'
 ], function(angular) {
-	var blog = angular.module('myApp.blog', ['ngRoute']);
+	var blog = angular.module('myApp.blog', ['ngRoute', 'ui.bootstrap']);
 	var postsByPage = 3;
 	blog.config(['$routeProvider', function($routeProvider) {
 
@@ -112,5 +113,140 @@ define([
 			}]
 		    };
 		  });
+	// controller of data table
+	blog.controller('modifyCtrl', ['$scope', '$http', function ($scope, $http) {
+		$scope.datePicker = {opened:false};
+		var page = 0;
+		var postsByPage = 10;
+		// load page
+    	var loadPosts = function() {
+    		$http.defaults.useXDomain = true;
+			$http.get(window.globalConfig.serviceURL+'/blognews/?size='+postsByPage+'&sort=postDate,desc&page='+page).
+			success(function(data, status, headers, config) {
+				if (data._embedded) {
+					// update blog posts
+					$scope.tabelsData = data._embedded.blognews;
+					initTable();
+
+				} else {
+					// clean blog posts var
+					$scope.tabelsData = [];
+				}
+
+		   }).
+			error(function(data, status, headers, config) {
+			  // log error
+			  console.log("Error "+data);
+			});
+    	};
+
+    	loadPosts();
+    	// start editable table
+    	var initTable = function() {
+    		$scope.editingData = [];
+
+    	    for (var i = 0, length = $scope.tabelsData.length; i < length; i++) {
+    	      $scope.editingData[$scope.tabelsData[i].id] = false;
+    	    }
+    	};
+    	// open for editing
+	    $scope.modify = function(tableData){
+	        $scope.editingData[tableData.newId] = true;
+	    };
+	    // update record
+	    $scope.update = function(tableData){
+	        $scope.editingData[tableData.newId] = false;
+	        $http.defaults.useXDomain = true;
+			$http({
+					url: window.globalConfig.serviceURL+'/blognews/',
+					method: "POST",
+			        data: JSON.stringify(tableData),
+			        headers: {'Content-Type': 'application/json'}
+			}).
+			success(function(data, status, headers, config) {
+
+		   }).
+			error(function(data, status, headers, config) {
+			  // log error
+			  console.log("Error "+data);
+			});
+	        console.log(tableData);
+	    };
+	    // open datepicker
+	    $scope.open = function($event) {
+	        $event.preventDefault();
+	        $event.stopPropagation();
+	        //$timeout( function(){
+	            $scope.datePicker.opened = true;
+	         //}, 50);
+	        //$scope.opened = true;
+	    };
+
+
+	}]);
+
+	// new controller
+	// controller of data table
+	blog.controller('newCtrl', ['$scope', '$http', function ($scope, $http) {
+		$scope.showNew = false;
+		$scope.datePicker = {opened:false};
+		// open new edit
+	    $scope.openNew = function() {
+	    	$scope.showNew = true;
+	    	console.log('open new'+$scope.showNew);
+	    };
+	    $scope.post = {};
+	    $scope.sdate = new Date();
+	    $scope.stime = new Date();
+	    // open datepicker
+	    $scope.open = function($event) {
+	        $event.preventDefault();
+	        $event.stopPropagation();
+	        $scope.datePicker.opened = true;
+	    };
+
+	    $scope.save = function() {
+	    	// TODO tryCombineDateTime();
+	    	$http.defaults.useXDomain = true;
+			$http({
+					url: window.globalConfig.serviceURL+'/blognews/',
+					method: "POST",
+			        data: JSON.stringify($scope.post),
+			        headers: {'Content-Type': 'application/json'}
+			}).
+			success(function(data, status, headers, config) {
+				 $scope.post = {};
+		   }).
+			error(function(data, status, headers, config) {
+			  // log error
+			  console.log("Error "+data);
+			});
+	    	console.log($scope.post);
+	    };
+	    // merge date and time together
+	    $scope.title = "$Watch sample";
+
+	    $scope.$watch('sdate', function() {
+	       tryCombineDateTime();
+	    });
+
+	    $scope.$watch('stime', function() {
+	       tryCombineDateTime();
+	    });
+
+	    function tryCombineDateTime() {
+	        if($scope.sdate && $scope.stime) {
+	            var dateParts = $scope.sdate.toString().split('-');
+	            var timeParts = $scope.stime.toString().split(':');
+	            console.log(dateParts);
+	            console.log(timeParts);
+	            if(dateParts && timeParts) {
+	                dateParts[1] -= 1;
+	               // $scope.post.postDate = new Date(Date.UTC.apply(undefined,dateParts.concat(timeParts))).toISOString();
+	            }
+	        }
+	    }
+	}]);
+
 });
 

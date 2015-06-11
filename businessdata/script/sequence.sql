@@ -1,0 +1,1 @@
+ALTER TABLE blognews ALTER newid SET DEFAULT NEXTVAL('blognews_newid_seq');

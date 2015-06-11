@@ -7,4 +7,5 @@ import com.businessdata.model.BlogNews;
 
 @RepositoryRestResource(collectionResourceRel = "blognews", path = "blognews")
 public interface BlogNewsRepository extends PagingAndSortingRepository<BlogNews, Integer> {
+//public interface BlogNewsRepository extends CrudRepository<BlogNews, Integer> {
 }

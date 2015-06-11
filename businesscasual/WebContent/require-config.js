@@ -20,9 +20,11 @@ require.config({
 	paths: {
 		angular: 'bower_components/angular/angular',
 		angularRoute: 'bower_components/angular-route/angular-route',
+		'ui-bootstrap': 'bower_components/angular-bootstrap/ui-bootstrap-tpls',
 		angularMocks: 'bower_components/angular-mocks/angular-mocks',
-		//angularResource: 'bower_components/angular-resource/angular-resource',
+		'angular-resource': 'bower_components/angular-resource/angular-resource',
 		text: 'bower_components/requirejs-text/text'
+
 	},
 	shim: {
 		'angular' : {'exports' : 'angular'},
@@ -30,11 +32,10 @@ require.config({
 		'angularMocks': {
 			deps:['angular'],
 			'exports':'angular.mock'
-		}
-		/*,
-		'angularResource': {
-	         deps: ['angular'],
-	    }*/
+		},
+		'ui-bootstrap': ['angular'],
+		//'app': ['angular','ui-bootstrap'],
+		'angular-resource': ['angular']
 	},
 	priority: [
 		"angular"
@@ -58,5 +59,5 @@ require([
 );
 
 var globalConfig = {
-	    serviceURL: 'http://localhost:8080/businessdata/api'	    
+	    serviceURL: 'http://localhost:8080/businessdata/api'
 	};
