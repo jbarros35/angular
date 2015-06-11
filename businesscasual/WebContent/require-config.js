@@ -58,5 +58,5 @@ require([
 );
 
 var globalConfig = {
-	    serviceURL: 'http://localhost:8080/businessdata/api'
+	    serviceURL: 'http://localhost:8080/businessdata/api'	    
 	};

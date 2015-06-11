@@ -58,7 +58,7 @@ public class AppConfig extends RepositoryRestMvcConfiguration {
               + System.getenv("POSTGRESQL_DB_PORT")
               + "/"+System.getenv("APP_NAME");
       System.out.println(url);
-      dataSource.setUrl("jdbc:postgresql://localhost:5433/test");
+      dataSource.setUrl("jdbc:postgresql://localhost:5432/test");
       //dataSource.setUsername(System.getenv("POSTGRESQL_DB_USERNAME"));
       //dataSource.setPassword(System.getenv("POSTGRESQL_DB_PASSWORD"));
       dataSource.setUsername("postgres");
