@@ -3,16 +3,16 @@ define([
 	'angular',
 	'angularRoute'
 ], function(angular) {
-	
+
 	var admin = angular.module('myApp.adminBlog', ['ngRoute']);
-	
+
 	admin.config(['$routeProvider', function($routeProvider) {
 		$routeProvider.when('/admin/blog', {
 			templateUrl: 'admin/blog/adminBlog.html',
 			controller: 'adminBlogCtrl'
 		});
 	}]);
-	
+
 	// controller of data table
 	admin.controller('adminBlogCtrl', ['$scope', '$http', function ($scope, $http) {
 		$scope.datePicker = {opened:false};
@@ -21,7 +21,10 @@ define([
 		// load page
     	var loadPosts = function() {
     		$http.defaults.useXDomain = true;
-			$http.get(window.globalConfig.serviceURL+'/blognews/?size='+postsByPage+'&sort=postDate,desc&page='+page).
+			$http({method: 'GET',
+				transformResponse: function (data) { data = angular.fromJson(data); data.dateOfBirth = new Date(data.dateOfBirth); return data; },
+				url: window.globalConfig.serviceURL+'/blognews/?size='+postsByPage+'&sort=postDate,desc&page='+page}
+			).
 			success(function(data, status, headers, config) {
 				if (data._embedded) {
 					// update blog posts
@@ -75,8 +78,8 @@ define([
 	    // open datepicker
 	    $scope.open = function($event) {
 	        $event.preventDefault();
-	        $event.stopPropagation();	        
-	            $scope.datePicker.opened = true;	        
+	        $event.stopPropagation();
+	            $scope.datePicker.opened = true;
 	    };
 
 
@@ -93,7 +96,7 @@ define([
 	    $scope.openNew = function() {
 	    	$scope.showNew = true;
 	    };
-	    
+
 	    // send json post for creation
 	    $scope.save = function() {
 	    	tryCombineDateTime();
@@ -109,17 +112,17 @@ define([
 				 $scope.sdate = null;
 				 $scope.stime = null;
 				 $scope.showAlert = true;
-				 $scope.showNew = false;				 
+				 $scope.showNew = false;
 				 $scope.successTextAlert = "Post saved";
 		   }).
 			error(function(data, status, headers, config) {
 			  // log error
 			  console.log("Error "+data);
-			});	    	
+			});
 	    };
 	    //TODO DOESNT WORKS!
 	    $scope.reset = function(form){
-	    	event.preventDefault();	
+	    	event.preventDefault();
             if(form.$setPristine){//only supported from v1.1.x
                 form.$setPristine();
                 console.log('setpristine');
@@ -127,7 +130,7 @@ define([
 
                 /*
                  *Underscore looping form properties, you can use for loop too like:
-                 *for(var i in form){ 
+                 *for(var i in form){
                  *  var input = form[i]; ...
                  */
                 _.each(form, function (input)
@@ -138,13 +141,13 @@ define([
                 });
             }
         };
-	      
+
 	    // switch flag
 	    $scope.switchBool = function (value) {
 	        $scope[value] = !$scope[value];
 	    };
-	    
-	    // merge date and time together	    
+
+	    // merge date and time together
 	    $scope.$watch('sdate', function() {
 	       tryCombineDateTime();
 	    });
@@ -154,21 +157,21 @@ define([
 	    });
 	    // combine date and time for inserting
 	    function tryCombineDateTime() {
-	    		    	
-	        if($scope.sdate && $scope.stime) {	        	
-	        	var dateParts = [$scope.sdate.getFullYear(), 
+
+	        if($scope.sdate && $scope.stime) {
+	        	var dateParts = [$scope.sdate.getFullYear(),
 	        	                 $scope.sdate.getMonth() + 1,
 	        	                 $scope.sdate.getDate()
 	        	                 ];
 	        	var timeParts = [$scope.stime.getHours(), $scope.stime.getMinutes(), $scope.stime.getSeconds()];
-   
+
 	            if(dateParts && timeParts) {
 	                dateParts[1] -= 1;
-	                $scope.post.postDate = new Date(Date.UTC.apply(undefined,dateParts.concat(timeParts))).toISOString();	             
+	                $scope.post.postDate = new Date(Date.UTC.apply(undefined,dateParts.concat(timeParts))).toISOString();
 	            }
 	        }
 	    }
 	}]);
-	
+
 });
 

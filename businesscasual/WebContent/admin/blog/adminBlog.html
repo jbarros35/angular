@@ -60,12 +60,12 @@
 	</div>
 </div>
 
- 	
+
 	<div ng-controller="newCtrl">
 		<div class="alert alert-success" ng-show="showAlert">
-        <button type="button" class="close" data-ng-click="switchBool('showAlert')">×</button> 
+        <button type="button" class="close" data-ng-click="switchBool('showAlert')">×</button>
         <strong>Done!</strong> {{successTextAlert}}</div>
-        
+
 		<div class="box">
 		<div class="panel panel-default" ng-show="showNew" >
 		  <div class="panel-heading">
@@ -75,7 +75,7 @@
 			  <form ng-submit="save()" novalidate name="postForm">
 			  <div class="form-group" ng-class="{ 'has-error' : postForm.title.$invalid}">
 			  	  <label>Title</label>
-			      <input type="text" class="form-control" ng-model="post.title" 
+			      <input type="text" class="form-control" ng-model="post.title"
 			      ng-minlength="10" ng-maxlength="30"
 			      name="title" size="30" placeholder="Post Title" required>
 			      <p ng-show="postForm.title.$error.required" class="help-inline">Post title is required.</p>
@@ -92,14 +92,14 @@
 	               <div class="form-group col-xs-6" ng-class="{ 'has-error' : postForm.stime.$invalid && !postForm.stime.$pristine }">
 	               	  <label>Time</label>
 					  <input type="time" class="form-control"
-	                                 ng-model="stime" name="stime" required/>				      
+	                                 ng-model="stime" name="stime" required/>
 				      <p ng-show="postForm.stime.$error.required" class="help-block">Time is required.</p>
 				   </div>
 				</div>
 
 				<div class="form-group" ng-class="{ 'has-error' : postForm.shortDescription.$invalid && !postForm.shortDescription.$pristine }">
 			  	  <label>Short description</label>
-			      <input type="text" class="form-control" ng-model="post.shortDescription" name="shortDescription" 
+			      <input type="text" class="form-control" ng-model="post.shortDescription" name="shortDescription"
 			      ng-minlength="10" ng-maxlength="100"
 			      size="30" placeholder="Short description" required>
 			       <p ng-show="postForm.shortDescription.$error.required" class="help-block">Short description is required.</p>
@@ -116,7 +116,7 @@
 				<div class="form-group" ng-class="{ 'has-error' : postForm.text.$invalid && !postForm.text.$pristine }">
 			  	  <label>Post text</label>
 			      <textarea class="form-control" ng-model="post.text" name="text" ng-minlength="50" ng-maxlength="1250" placeholder="Post text" rows="10" required/>
-			      <p ng-show="postForm.text.$error.required" class="help-block">Post text is required.</p>			       
+			      <p ng-show="postForm.text.$error.required" class="help-block">Post text is required.</p>
 			      <p ng-show="postForm.text.$error.minlength" class="help-block">Post text is too short.</p>
             	  <p ng-show="postForm.text.$error.maxlength" class="help-block">Post text is too long.</p>
 			   </div>
