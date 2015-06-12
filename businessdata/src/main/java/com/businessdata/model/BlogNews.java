@@ -18,16 +18,16 @@ public class BlogNews {
 	@Column
 	private boolean active;
 
-	@Column
+	@Column(length=30)
 	private String title;
 
-	@Column
+	@Column(length=100)
 	private String imageUrl;
 
 	@Column
 	private Date postDate;
 
-	@Column
+	@Column(length=100)
 	private String shortDescription;
 
 	@Column
