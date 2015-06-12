@@ -9,7 +9,6 @@ define([
 	'about/about',
 	'blog/blog',
 	'contact/contact',
-	'admin/admin',
 	'utility/util'
 ], function(angular, angularRoute) {
 	// Declare app level module which depends on views, and components
@@ -20,7 +19,6 @@ define([
 		'myApp.about',
 		'myApp.blog',
 		'myApp.contact',
-		'myApp.admin',
 		'myApp.util'
 	]).
 	config(['$routeProvider', function($routeProvider) {
