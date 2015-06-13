@@ -1,10 +1,11 @@
 'use strict';
 define([
 	'angular',
-	'angularRoute'
+	'angularRoute',
+	'blog/services'
 ], function(angular) {
 
-	var blog = angular.module('myApp.blog', ['ngRoute']);
+	var blog = angular.module('myApp.blog', ['ngRoute', 'myApp.blog.services', 'angular-flash.service', 'angular-flash.flash-alert-directive']);
 
 	blog.config(['$routeProvider', function($routeProvider) {
 		$routeProvider.when('/blog', {
@@ -18,7 +19,7 @@ define([
 	}]);
 
 	// menu directive
-	blog.directive("editBlog", ['$parse', '$http', '$compile', '$templateCache', function($parse, $http, $compile, $templateCache) {
+	blog.directive("editBlog", ['$parse', '$http', '$compile', '$templateCache', 'flash', function($parse, $http, $compile, $templateCache, flash) {
 
 		  return {
 		    restrict: "A",
@@ -34,43 +35,30 @@ define([
 	            	$scope.loadPosts();
 	            };
 	        },
-		    controller: ['$scope', '$http', '$filter', function ($scope, $http, $filter) {
+		    controller: ['$scope', '$http', '$filter', 'blogService', 'flash', function ($scope, $http, $filter, blogService, flash) {
 		    	var page = 0;
 				var postsByPage = 10;
 				$scope.nodataFound = "No records found.";
 				$scope.hideTable = false;
 				// load page
 				$scope.loadPosts = function() {
-		    		$http.defaults.useXDomain = true;
-		    		$http({method: 'GET',
-						transformResponse: function (data) {
-							data = angular.fromJson(data);
-							if (data._embedded) {
-								for (var i = 0, length = data._embedded.blognews.length; i < length; i++) {
-									var blogPost = data._embedded.blognews[i];
-									 if (!angular.isDate(blogPost.postDate)) {
-										 blogPost.postDate = new Date(blogPost.postDate);
-									 }
-						    	 }
-							}
-							return data;
-						},
-						url: window.globalConfig.serviceURL+'/blognews/?size='+postsByPage+'&sort=postDate,desc&page='+page}
-					).
+					blogService.posts(postsByPage, 'postDate', page).
 					success(function(data, status, headers, config) {
 						if (data._embedded) {
 							// update blog posts
 							$scope.tabelsData = data._embedded.blognews;
 							initTable();
-
+							flash.success = 'Posts loaded';
 						} else {
 							// clean blog posts var
 							$scope.tabelsData = [];
+							flash.info = 'No posts found.';
 						}
 
 				   }).
 					error(function(data, status, headers, config) {
 					  // log error
+					  flash.error = 'Fail to load!'+data;
 					  console.log("Error "+data);
 					});
 		    	};
@@ -79,7 +67,6 @@ define([
 		    	// start editable table
 		    	var initTable = function() {
 		    		$scope.editingData = [];
-
 		    	    for (var i = 0, length = $scope.tabelsData.length; i < length; i++) {
 		    	      $scope.editingData[$scope.tabelsData[i].id] = false;
 		    	    }
@@ -91,21 +78,30 @@ define([
 			    // update record
 			    $scope.update = function(tableData){
 			        $scope.editingData[tableData.newId] = false;
-			        $http.defaults.useXDomain = true;
-					$http({
-							url: window.globalConfig.serviceURL+'/blognews/',
-							method: "POST",
-					        data: JSON.stringify(tableData),
-					        headers: {'Content-Type': 'application/json'}
+			        
+			        blogService.update(tableData)
+					.success(function(data, status, headers, config) {
+						flash.success = 'Record updated.';						
 					}).
-					success(function(data, status, headers, config) {
-
-				   }).
 					error(function(data, status, headers, config) {
+						 flash.error = 'Fail to update!'+data;
 					  // log error
 					  console.log("Error "+data);
 					});
 			        console.log(tableData);
+			    };
+			    // delete record
+			    $scope.deletePost = function(index) {
+			    	var tableData = $scope.tabelsData[index];
+			    	blogService.deletePost(tableData.newId).success(function(data, status, headers, config) {
+			    		$scope.tabelsData.splice(index, 1);
+			    		 flash.success = 'Post deleted.';
+			    	}).
+					error(function(data, status, headers, config) {
+						 flash.error = 'Fail to load!'+data;
+						  // log error
+						  console.log("Error "+data);
+					});
 			    };
 			}]
 		    };
@@ -114,14 +110,14 @@ define([
 	// creation directive
 	// new controller
 	// controller of data table
-	blog.directive("newPost", ['$parse', '$http', '$compile', '$templateCache', function($parse, $http, $compile, $templateCache) {
+	blog.directive("newPost", ['$parse', '$http', '$compile', '$templateCache', 'blogService', 'flash', function($parse, $http, $compile, $templateCache, blogService, flash) {
 		 return {
 			    restrict: "A",
 			    replace: true,
 			    scope: false,
 			    transclude: true,
 			    templateUrl: "blog/newPost.html",
-			    controller: ['$scope', '$http', function ($scope, $http) {
+			    controller: ['$scope', '$http', 'flash', function ($scope, $http, flash) {
 			    	$scope.showNew = false;
 					$scope.post = {};
 				    $scope.showAlert = false;
@@ -134,14 +130,8 @@ define([
 
 				    // send json post for creation
 				    $scope.save = function() {
-				    	tryCombineDateTime();
-				    	$http.defaults.useXDomain = true;
-						$http({
-								url: window.globalConfig.serviceURL+'/blognews/',
-								method: "POST",
-						        data: JSON.stringify($scope.post),
-						        headers: {'Content-Type': 'application/json'}
-						}).
+				    	tryCombineDateTime();				    	
+				    	blogService.create($scope.post).
 						success(function(data, status, headers, config) {
 							 $scope.post = {};
 							 $scope.sdate = null;
@@ -151,8 +141,10 @@ define([
 							 $scope.successTextAlert = "Post saved";
 							 $scope.reload();
 							 $scope.hideEdit(false);
+							 flash.sucess = 'Post saved.';
 					   }).
 						error(function(data, status, headers, config) {
+							flash.error = 'Failed to save post!'+data;
 						  // log error
 						  console.log("Error "+data);
 						});

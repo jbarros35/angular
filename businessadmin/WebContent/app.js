@@ -4,6 +4,7 @@ define([
 	'angular',
 	'angularRoute',
 	'angular-resource',
+	'angular-flash',
 	'ui-bootstrap',
 	'layout/menu',
 	'home/home',

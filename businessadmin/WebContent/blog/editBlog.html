@@ -1,6 +1,14 @@
 <div class="box">
-<div class="alert alert-info" ng-show="tabelsData.length === 0">
-        <strong>Information</strong> {{nodataFound}}</div>
+	
+<!-- 	<div class="alert alert-info" ng-show="tabelsData.length === 0"> -->
+<!--         <strong>Information</strong> {{nodataFound}}</div>         -->
+        
+        	
+	<div flash-alert="info" active-class="in alert" class="alert-flash fade">
+    	<i class="icon-info-sign"></i>
+    	<strong class="alert-heading">Information</strong>
+    	<span class="alert-message">{{flash.message}}</span>
+	</div>
 
 <div class="panel panel-primary" ng-hide="hideTable || tabelsData.length === 0">
    <div class="panel-heading">Edit blog posts</div>
@@ -36,7 +44,7 @@
                    <button ng-show="editingData[tableData.newId]" ng-click="update(tableData)" class="btn btn-default">
                    	<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
                    </button>
-					<button ng-show="editingData[tableData.newId]" ng-click="remove(tableData)" class="btn btn-default">
+					<button ng-show="editingData[tableData.newId]" ng-click="deletePost($index)" class="btn btn-default">
                    	<span class="glyphicon glyphicon glyphicon-trash" aria-hidden="true"></span>
                    </button>
                </td>

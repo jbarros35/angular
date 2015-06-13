@@ -20,11 +20,11 @@ require.config({
 	paths: {
 		angular: 'bower_components/angular/angular',
 		angularRoute: 'bower_components/angular-route/angular-route',
+		'angular-flash': 'bower_components/angular-flash/dist/angular-flash',
 		'ui-bootstrap': 'bower_components/angular-bootstrap/ui-bootstrap-tpls',
 		angularMocks: 'bower_components/angular-mocks/angular-mocks',
 		'angular-resource': 'bower_components/angular-resource/angular-resource',
 		text: 'bower_components/requirejs-text/text',
-		//'jQuery': 'bower_components/jquery/dist/jquery'
 		'jQuery': 'assets/js/jquery'
 
 	},
@@ -36,6 +36,7 @@ require.config({
 			'exports':'angular.mock'
 		},
 		'ui-bootstrap': ['angular'],
+		'angular-flash' : ['angular'],
 		'angular-resource': ['angular'],
 		'jQuery': {'exports' : 'jQuery'}
 	},
