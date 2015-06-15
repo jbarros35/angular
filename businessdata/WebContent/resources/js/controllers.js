@@ -1,6 +1,6 @@
 var app = angular.module('statelessApp', []).factory('TokenStorage', function() {
 	var storageKey = 'auth_token';
-	return {		
+	return {
 		store : function(token) {
 			return localStorage.setItem(storageKey, token);
 		},
@@ -34,32 +34,61 @@ var app = angular.module('statelessApp', []).factory('TokenStorage', function() 
 app.controller('AuthCtrl', function ($scope, $http, TokenStorage) {
 	$scope.authenticated = false;
 	$scope.token; // For display purposes only
-	
+
 	$scope.init = function () {
 		$http.get('http://localhost:8080/businessdata/api/users/current').success(function (user) {
 			if(user.username !== 'anonymousUser'){
 				$scope.authenticated = true;
 				$scope.username = user.username;
-				
-				// For display purposes only
-				$scope.token = JSON.parse(atob(TokenStorage.retrieve().split('.')[0]));
+				if (TokenStorage.retrieve()) {
+					// For display purposes only
+					$scope.token = JSON.parse(atob(TokenStorage.retrieve().split('.')[0]));
+				} else {
+					$scope.authenticated = false;
+				}
 			}
 		});
 	};
 
 	$scope.login = function () {
-		$http.post('http://localhost:8080/businessdata/api/user', { username: $scope.username, password: $scope.password }).success(function (result, status, headers) {
+		$http.post('http://localhost:8080/businessdata/api/login', { username: $scope.username, password: $scope.password })
+		.success(function (result, status, headers) {
 			$scope.authenticated = true;
 			TokenStorage.store(headers('X-AUTH-TOKEN'));
-			
-			// For display purposes only
-			$scope.token = JSON.parse(atob(TokenStorage.retrieve().split('.')[0]));
-		});  
+			if (TokenStorage.retrieve()) {
+				// For display purposes only
+				$scope.token = JSON.parse(atob(TokenStorage.retrieve().split('.')[0]));
+			} else {
+				$scope.authenticated = false;
+			}
+		})
+		.error(function(result,status,headers){
+			$scope.showerror = true;
+			$scope.msg = result;
+		});
 	};
 
 	$scope.logout = function () {
-		// Just clear the local storage
-		TokenStorage.clear();	
-		$scope.authenticated = false;
+
+		//login?logout
+		$http.get('http://localhost:8080/businessdata/api/users/logout', {})
+		.success(function (result, status, headers) {
+			// Just clear the local storage
+			TokenStorage.clear();
+			$scope.authenticated = false;
+			console.log('log out success');
+		})
+		.error(function(result,status,headers){
+			$scope.showerror = true;
+			$scope.msg = result;
+		});
 	};
+	/*
+	 *  $http.post('logout', {}).success(function() {
+    $rootScope.authenticated = false;
+    $location.path("/");
+  }).error(function(data) {
+    $rootScope.authenticated = false;
+  });
+	 */
 });

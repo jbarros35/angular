@@ -5,23 +5,27 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.businessdata.security.TokenAuthenticationService;
 import com.businessdata.security.UserDetailsService;
 
 @Configuration
 @EnableWebSecurity
-//@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
+@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class StatelessAuthenticationSecurityConfig extends
 		WebSecurityConfigurerAdapter {
 
@@ -45,61 +49,43 @@ public class StatelessAuthenticationSecurityConfig extends
 		auth.authenticationProvider(daoAuthenticationProvider);
 	}
 
-	/*
-	 * @Override public void configure(WebSecurity webSecurity) throws Exception
-	 * { webSecurity.ignoring() // All of Spring Security will ignore the
-	 * requests .antMatchers("/resources/**") .antMatchers(HttpMethod.POST,
-	 * "/api/login"); }
-	 */
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().antMatchers("/resources/**");
+	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		/*
-		 * http.exceptionHandling().and().anonymous().and() .servletApi() .and()
-		 * .headers() .cacheControl() .and() .authorizeRequests()
-		 * 
-		 * // allow anonymous resource requests .antMatchers("/") .permitAll()
-		 * .antMatchers("/favicon.ico") .permitAll()
-		 * .antMatchers("/resources/**") .permitAll()
-		 * 
-		 * // allow anonymous POSTs to login .antMatchers(HttpMethod.POST,
-		 * "/api/login") .permitAll()
-		 * 
-		 * // allow anonymous GETs to API // .antMatchers(HttpMethod.GET,
-		 * "/api/**").permitAll()
-		 * 
-		 * // defined Admin only API area .antMatchers("/admin/**")
-		 * .hasRole("ADMIN")
-		 * 
-		 * // all other request need to be authenticated .anyRequest()
-		 * .hasRole("USER") .and()
-		 * 
-		 * // custom JSON based authentication by POST of //
-		 * {"username":"<name>","password":"<password>"} which sets the // token
-		 * header upon authentication .addFilterBefore( new
-		 * StatelessLoginFilter("/api/login", tokenAuthenticationService,
-		 * userDetailsService, authenticationManager()),
-		 * UsernamePasswordAuthenticationFilter.class)
-		 * 
-		 * // custom Token based authentication based on the header //
-		 * previously given to the client .addFilterBefore( new
-		 * StatelessAuthenticationFilter( tokenAuthenticationService),
-		 * UsernamePasswordAuthenticationFilter.class); http.httpBasic();
-		 * http.sessionManagement().sessionCreationPolicy(
-		 * SessionCreationPolicy.STATELESS);
-		 */
+		http
+		.exceptionHandling().and()
+		.anonymous().and()
+		.servletApi().and()
+		.headers().cacheControl().and()
+		.authorizeRequests()
 
-		http.httpBasic().and().authorizeRequests()
-				.antMatchers("/index.html", "/home.html", "/login.html", "/")
-				.permitAll().anyRequest().authenticated().and()
-				.addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
-				.csrf().csrfTokenRepository(csrfTokenRepository());
-	}
+		//allow anonymous resource requests
+		.antMatchers("/").permitAll()
+		.antMatchers("/favicon.ico").permitAll()
+		.antMatchers("/resources/**").permitAll()
 
-	private CsrfTokenRepository csrfTokenRepository() {
-		HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-		repository.setHeaderName("X-XSRF-TOKEN");
-		return repository;
+		//allow anonymous POSTs to login
+		.antMatchers(HttpMethod.POST, "/api/login").permitAll()
+		// Login page
+		.antMatchers("/login.html").permitAll()
+		//allow anonymous GETs to API
+		.antMatchers(HttpMethod.GET, "/api/**").permitAll()
+
+		//defined Admin only API area
+		.antMatchers("/admin/**").hasRole("ADMIN")
+
+		//all other request need to be authenticated
+		.anyRequest().hasRole("USER").and()
+
+		// custom JSON based authentication by POST of {"username":"<name>","password":"<password>"} which sets the token header upon authentication
+		.addFilterBefore(new StatelessLoginFilter("/api/login", tokenAuthenticationService, userDetailsService, authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+
+		// custom Token based authentication based on the header previously given to the client
+		.addFilterBefore(new StatelessAuthenticationFilter(tokenAuthenticationService), UsernamePasswordAuthenticationFilter.class);
 	}
 
 	@Bean

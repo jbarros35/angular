@@ -24,7 +24,7 @@ import com.businessdata.model.BlogNews;
 
 @Configuration
 @EnableJpaRepositories(basePackages = { "com.businessdata.repository" })
-@ComponentScan(basePackages = {"com.businessdata"} 
+@ComponentScan(basePackages = {"com.businessdata"}
 	/*excludeFilters = {
 	    @ComponentScan.Filter(value = Controller.class, type = FilterType.ANNOTATION),
 	    @ComponentScan.Filter(value = Configuration.class, type = FilterType.ANNOTATION)}*/
@@ -38,7 +38,7 @@ public class AppConfig extends RepositoryRestMvcConfiguration {
     super.configureRepositoryRestConfiguration(config);
     try {
       config.setBaseUri(new URI("/api"));
-      config.exposeIdsFor(BlogNews.class);      
+      config.exposeIdsFor(BlogNews.class);
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
@@ -60,7 +60,7 @@ public class AppConfig extends RepositoryRestMvcConfiguration {
       System.out.println(url);
       dataSource.setUrl(url);
       dataSource.setUsername(System.getenv("POSTGRESQL_DB_USERNAME"));
-      dataSource.setPassword(System.getenv("POSTGRESQL_DB_PASSWORD"));      
+      dataSource.setPassword(System.getenv("POSTGRESQL_DB_PASSWORD"));
       dataSource.setTestOnBorrow(true);
       dataSource.setTestOnReturn(true);
       dataSource.setTestWhileIdle(true);

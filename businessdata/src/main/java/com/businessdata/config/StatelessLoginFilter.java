@@ -16,6 +16,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.businessdata.model.UserData;
 import com.businessdata.security.TokenAuthenticationService;
@@ -45,7 +47,7 @@ class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter {
 				user.getUsername(), user.getPassword());
 		return getAuthenticationManager().authenticate(loginToken);
 	}
-	
+
 	@Override
 	  public void doFilter(ServletRequest req, ServletResponse res,
 	    FilterChain chain) throws IOException, ServletException {

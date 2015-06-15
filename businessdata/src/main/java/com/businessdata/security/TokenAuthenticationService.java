@@ -15,7 +15,7 @@ import com.businessdata.model.UserData;
 public class TokenAuthenticationService {
 
 	private static final String AUTH_HEADER_NAME = "X-AUTH-TOKEN";
-	private static final long TEN_DAYS = 1000 * 60 * 60 * 24 * 10;
+	private static final long TEN_MINUTES = 1000 * 60 * 10;
 
 	private final TokenHandler tokenHandler;
 
@@ -26,7 +26,7 @@ public class TokenAuthenticationService {
 
 	public void addAuthentication(HttpServletResponse response, UserAuthentication authentication) {
 		final UserData user = authentication.getDetails();
-		user.setExpires(System.currentTimeMillis() + TEN_DAYS);
+		user.setExpires(TEN_MINUTES);
 		response.addHeader(AUTH_HEADER_NAME, tokenHandler.createTokenForUser(user));
 	}
 
