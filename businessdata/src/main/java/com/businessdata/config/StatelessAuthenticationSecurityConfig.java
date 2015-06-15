@@ -64,7 +64,7 @@ public class StatelessAuthenticationSecurityConfig extends
 		.authorizeRequests()
 
 		//allow anonymous resource requests
-		.antMatchers("/").permitAll()
+		.antMatchers("/index.html").permitAll()
 		.antMatchers("/favicon.ico").permitAll()
 		.antMatchers("/resources/**").permitAll()
 
@@ -73,10 +73,14 @@ public class StatelessAuthenticationSecurityConfig extends
 		// Login page
 		.antMatchers("/login.html").permitAll()
 		//allow anonymous GETs to API
-		.antMatchers(HttpMethod.GET, "/api/**").permitAll()
-
+		.antMatchers(HttpMethod.GET, "/api/users/current").permitAll()
+		// api/users/logout
+		.antMatchers(HttpMethod.GET, "/api/users/logout").permitAll()
 		//defined Admin only API area
-		.antMatchers("/admin/**").hasRole("ADMIN")
+		.antMatchers("/secured/admin/**").hasRole("ADMIN")
+		// user area
+		.antMatchers("/secured/user/**").hasRole("USER")
+		.antMatchers("/api/blognews/**").hasRole("USER")
 
 		//all other request need to be authenticated
 		.anyRequest().hasRole("USER").and()

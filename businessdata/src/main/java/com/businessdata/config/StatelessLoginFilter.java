@@ -13,8 +13,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,11 +43,13 @@ class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter {
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException, IOException, ServletException {
-
 		final UserData user = new ObjectMapper().readValue(request.getInputStream(), UserData.class);
 		final UsernamePasswordAuthenticationToken loginToken = new UsernamePasswordAuthenticationToken(
 				user.getUsername(), user.getPassword());
-		return getAuthenticationManager().authenticate(loginToken);
+
+		Authentication authenticationResult = getAuthenticationManager().authenticate(loginToken);
+		SecurityContextHolder.getContext().setAuthentication(authenticationResult);
+		return authenticationResult;
 	}
 
 	@Override
@@ -77,8 +81,8 @@ class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter {
 
 		// Add the custom token as HTTP header to the response
 		tokenAuthenticationService.addAuthentication(response, userAuthentication);
-
 		// Add the authentication to the Security context
 		SecurityContextHolder.getContext().setAuthentication(userAuthentication);
+		getSuccessHandler().onAuthenticationSuccess(request, response, authentication);
 	}
 }

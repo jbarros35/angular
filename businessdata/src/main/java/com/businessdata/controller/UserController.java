@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.businessdata.model.UserData;
 import com.businessdata.model.UserRole;
 import com.businessdata.repository.UserRepository;
+import com.businessdata.security.UserAuthentication;
 
 @RestController
 public class UserController {
@@ -31,22 +32,12 @@ public class UserController {
 
 	@RequestMapping(value = "/api/users/current", method = RequestMethod.GET)
 	public UserData getCurrent() throws Exception {
-		UserData userdata = null;
-		final Authentication authentication = SecurityContextHolder
-				.getContext().getAuthentication();
 
-		if (isAuthenticated(authentication)) {
-			Object principal = authentication.getDetails();
-			if (principal instanceof UserData) {
-				userdata = ((UserData) principal);
-			} else {
-				userdata = new UserData("anonymousUser");
-			}
-		} else {
-			userdata = new UserData("anonymousUser");
+		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication instanceof UserAuthentication) {
+			return ((UserAuthentication) authentication).getDetails();
 		}
-		// anonymous user support
-		return userdata;
+		return new UserData(authentication.getName()); //anonymous user support
 	}
 
 	private boolean isAuthenticated(Authentication authentication) {
@@ -70,11 +61,11 @@ public class UserController {
 
 	            new SecurityContextLogoutHandler().logout(request, response, authentication);
 	        }
-	        SecurityContextHolder.getContext().setAuthentication(null);
-			request.logout();
-			request.getSession().invalidate();
+	        //SecurityContextHolder.getContext().setAuthentication(null);
+			//request.logout();
+			//request.getSession().invalidate();
 
-		} catch (ServletException e) {
+		} catch (Exception e) {
 			return new ResponseEntity<String>("Error trying to logout",
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
