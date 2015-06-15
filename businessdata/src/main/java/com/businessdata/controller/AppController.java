@@ -3,7 +3,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/app")
 public class AppController {
 
   @RequestMapping(method = RequestMethod.GET)

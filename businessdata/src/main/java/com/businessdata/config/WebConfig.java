@@ -7,7 +7,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "be.g00glen00b.controller")
+@ComponentScan(basePackages = {"com.businessdata.controller"})
+@Import({StatelessAuthenticationSecurityConfig.class})
 public class WebConfig extends WebMvcConfigurerAdapter {
 
   @Bean
@@ -23,7 +24,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     configurer.enable();
   }
 
-  @Bean
   public WebContentInterceptor webContentInterceptor() {
     WebContentInterceptor interceptor = new WebContentInterceptor();
     interceptor.setCacheSeconds(0);

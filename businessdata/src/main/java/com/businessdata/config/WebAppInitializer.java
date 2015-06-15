@@ -13,11 +13,6 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
   protected void customizeRegistration(ServletRegistration.Dynamic registration) {
     registration.setInitParameter("dispatchOptionsRequest", "true");
     registration.setAsyncSupported(true);
-    System.getenv("POSTGRESQL_DB_HOST");
-    System.getenv("POSTGRESQL_DB_PORT");
-    System.getenv("APP_NAME");
-    System.getenv("POSTGRESQL_DB_USERNAME");
-    System.getenv("POSTGRESQL_DB_PASSWORD");
   }
 
   @Override

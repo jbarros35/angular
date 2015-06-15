@@ -2,7 +2,6 @@ package com.businessdata.config;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Properties;
 
 import javax.sql.DataSource;
 
@@ -25,20 +24,21 @@ import com.businessdata.model.BlogNews;
 
 @Configuration
 @EnableJpaRepositories(basePackages = { "com.businessdata.repository" })
-@ComponentScan(basePackages = "com.businessdata", excludeFilters = {
-    @ComponentScan.Filter(value = Controller.class, type = FilterType.ANNOTATION),
-    @ComponentScan.Filter(value = Configuration.class, type = FilterType.ANNOTATION)
-})
+@ComponentScan(basePackages = {"com.businessdata"} 
+	/*excludeFilters = {
+	    @ComponentScan.Filter(value = Controller.class, type = FilterType.ANNOTATION),
+	    @ComponentScan.Filter(value = Configuration.class, type = FilterType.ANNOTATION)}*/
+)
 public class AppConfig extends RepositoryRestMvcConfiguration {
 
-  private static final String PACKAGES_SCAN = "com.businessdata";
+  private static final String[] PACKAGES_SCAN = {"com.businessdata"};
 
 @Override
   protected void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
     super.configureRepositoryRestConfiguration(config);
     try {
       config.setBaseUri(new URI("/api"));
-      config.exposeIdsFor(BlogNews.class);
+      config.exposeIdsFor(BlogNews.class);      
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
